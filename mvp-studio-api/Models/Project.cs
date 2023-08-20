@@ -7,6 +7,7 @@ namespace mvp_studio_api.Models
     public class Project
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [ForeignKey(nameof(Client))]

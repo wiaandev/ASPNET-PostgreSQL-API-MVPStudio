@@ -1,6 +1,30 @@
-﻿namespace mvp_studio_api.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace mvp_studio_api.Models
 {
+    [Table("Employee")]
     public class Employee
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        [ForeignKey(nameof(Role))]
+        public int RoleId { get; set; }
+        public Role Role { get; set; }
+
+        public string Name { get; set; }
+
+        public string Surname { get; set; }
+
+        public string Gender { get; set; }
+
+        public string ProfileImg { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateOnly? Birth_Date { get; set; }
+
+        public int Curr_Hours { get; set; }
     }
 }

@@ -7,9 +7,12 @@ namespace mvp_studio_api.Models
     public class Admin
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        //add foreign key to roles table for type of role
+        [ForeignKey(nameof(Role))]
+        public int RoleId { get; set; }
+        public Role Role { get; set; }
 
         public string Name { get; set; }
 
