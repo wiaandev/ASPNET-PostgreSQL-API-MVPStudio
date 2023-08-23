@@ -21,6 +21,8 @@ namespace mvp_studio_api.Models
 
         [ForeignKey(nameof(ClientType))]
         public int ClientTypeId { get; set; }
-        public ClientType ClientType { get; set; }
+
+        [NotMapped]
+        public ClientType? ClientType { get; set; }
     }
 }
