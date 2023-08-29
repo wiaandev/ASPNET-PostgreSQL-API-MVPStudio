@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Isopoh.Cryptography.Argon2;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,55 +12,55 @@ namespace mvp_studio_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AdminsController : ControllerBase
+    public class RolesController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public AdminsController(AppDbContext context)
+        public RolesController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Admins
+        // GET: api/Roles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Admin>>> GetAdmin()
+        public async Task<ActionResult<IEnumerable<Role>>> GetRole()
         {
-          if (_context.Admin == null)
+          if (_context.Role == null)
           {
               return NotFound();
           }
-            return await _context.Admin.ToListAsync();
+            return await _context.Role.ToListAsync();
         }
 
-        // GET: api/Admins/5
+        // GET: api/Roles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Admin>> GetAdmin(int id)
+        public async Task<ActionResult<Role>> GetRole(int id)
         {
-          if (_context.Admin == null)
+          if (_context.Role == null)
           {
               return NotFound();
           }
-            var admin = await _context.Admin.FindAsync(id);
+            var role = await _context.Role.FindAsync(id);
 
-            if (admin == null)
+            if (role == null)
             {
                 return NotFound();
             }
 
-            return admin;
+            return role;
         }
 
-        // PUT: api/Admins/5
+        // PUT: api/Roles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAdmin(int id, Admin admin)
+        public async Task<IActionResult> PutRole(int id, Role role)
         {
-            if (id != admin.Id)
+            if (id != role.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(admin).State = EntityState.Modified;
+            _context.Entry(role).State = EntityState.Modified;
 
             try
             {
@@ -69,7 +68,7 @@ namespace mvp_studio_api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AdminExists(id))
+                if (!RoleExists(id))
                 {
                     return NotFound();
                 }
@@ -82,48 +81,44 @@ namespace mvp_studio_api.Controllers
             return NoContent();
         }
 
-        // POST: api/Admins
+        // POST: api/Roles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Admin>> PostAdmin(Admin admin)
+        public async Task<ActionResult<Role>> PostRole(Role role)
         {
-          if (_context.Admin == null)
+          if (_context.Role == null)
           {
-              return Problem("Entity set 'AppDbContext.Admin'  is null.");
+              return Problem("Entity set 'AppDbContext.Role'  is null.");
           }
-
-            //TODO: Add Hashing algo for passwords
-            admin.Password = Argon2.Hash(admin.Password);
-
-            _context.Admin.Add(admin);
+            _context.Role.Add(role);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAdmin", new { id = admin.Id }, admin);
+            return CreatedAtAction("GetRole", new { id = role.Id }, role);
         }
 
-        // DELETE: api/Admins/5
+        // DELETE: api/Roles/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAdmin(int id)
+        public async Task<IActionResult> DeleteRole(int id)
         {
-            if (_context.Admin == null)
+            if (_context.Role == null)
             {
                 return NotFound();
             }
-            var admin = await _context.Admin.FindAsync(id);
-            if (admin == null)
+            var role = await _context.Role.FindAsync(id);
+            if (role == null)
             {
                 return NotFound();
             }
 
-            _context.Admin.Remove(admin);
+            _context.Role.Remove(role);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool AdminExists(int id)
+        private bool RoleExists(int id)
         {
-            return (_context.Admin?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Role?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
