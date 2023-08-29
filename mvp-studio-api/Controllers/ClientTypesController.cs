@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Isopoh.Cryptography.Argon2;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,55 +12,55 @@ namespace mvp_studio_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AdminsController : ControllerBase
+    public class ClientTypesController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public AdminsController(AppDbContext context)
+        public ClientTypesController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Admins
+        // GET: api/ClientTypes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Admin>>> GetAdmin()
+        public async Task<ActionResult<IEnumerable<ClientType>>> GetClient_Type()
         {
-          if (_context.Admin == null)
+          if (_context.Client_Type == null)
           {
               return NotFound();
           }
-            return await _context.Admin.ToListAsync();
+            return await _context.Client_Type.ToListAsync();
         }
 
-        // GET: api/Admins/5
+        // GET: api/ClientTypes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Admin>> GetAdmin(int id)
+        public async Task<ActionResult<ClientType>> GetClientType(int id)
         {
-          if (_context.Admin == null)
+          if (_context.Client_Type == null)
           {
               return NotFound();
           }
-            var admin = await _context.Admin.FindAsync(id);
+            var clientType = await _context.Client_Type.FindAsync(id);
 
-            if (admin == null)
+            if (clientType == null)
             {
                 return NotFound();
             }
 
-            return admin;
+            return clientType;
         }
 
-        // PUT: api/Admins/5
+        // PUT: api/ClientTypes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAdmin(int id, Admin admin)
+        public async Task<IActionResult> PutClientType(int id, ClientType clientType)
         {
-            if (id != admin.Id)
+            if (id != clientType.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(admin).State = EntityState.Modified;
+            _context.Entry(clientType).State = EntityState.Modified;
 
             try
             {
@@ -69,7 +68,7 @@ namespace mvp_studio_api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AdminExists(id))
+                if (!ClientTypeExists(id))
                 {
                     return NotFound();
                 }
@@ -82,48 +81,44 @@ namespace mvp_studio_api.Controllers
             return NoContent();
         }
 
-        // POST: api/Admins
+        // POST: api/ClientTypes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Admin>> PostAdmin(Admin admin)
+        public async Task<ActionResult<ClientType>> PostClientType(ClientType clientType)
         {
-          if (_context.Admin == null)
+          if (_context.Client_Type == null)
           {
-              return Problem("Entity set 'AppDbContext.Admin'  is null.");
+              return Problem("Entity set 'AppDbContext.Client_Type'  is null.");
           }
-
-            //TODO: Add Hashing algo for passwords
-            admin.Password = Argon2.Hash(admin.Password);
-
-            _context.Admin.Add(admin);
+            _context.Client_Type.Add(clientType);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAdmin", new { id = admin.Id }, admin);
+            return CreatedAtAction("GetClientType", new { id = clientType.Id }, clientType);
         }
 
-        // DELETE: api/Admins/5
+        // DELETE: api/ClientTypes/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAdmin(int id)
+        public async Task<IActionResult> DeleteClientType(int id)
         {
-            if (_context.Admin == null)
+            if (_context.Client_Type == null)
             {
                 return NotFound();
             }
-            var admin = await _context.Admin.FindAsync(id);
-            if (admin == null)
+            var clientType = await _context.Client_Type.FindAsync(id);
+            if (clientType == null)
             {
                 return NotFound();
             }
 
-            _context.Admin.Remove(admin);
+            _context.Client_Type.Remove(clientType);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool AdminExists(int id)
+        private bool ClientTypeExists(int id)
         {
-            return (_context.Admin?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Client_Type?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
