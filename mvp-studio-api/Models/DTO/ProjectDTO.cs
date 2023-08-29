@@ -5,7 +5,7 @@ namespace mvp_studio_api.Models.DTO
     {
         public int Id { get; set; }
 
-        public string ClientId { get; set; } = string.Empty;
+        public string ClienName { get; set; } = string.Empty;
 
         public string Project_Name { get; set; } = string.Empty;
 
