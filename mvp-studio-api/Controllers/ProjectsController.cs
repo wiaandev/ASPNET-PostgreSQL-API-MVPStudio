@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using mvp_studio_api.Models;
+using mvp_studio_api.Models.DTO;
 using testApi;
 
 namespace mvp_studio_api.Controllers
@@ -27,10 +28,26 @@ namespace mvp_studio_api.Controllers
         {
           if (_context.Project == null)
           {
-              return NotFound();
+                return StatusCode(StatusCodes.Status500InternalServerError);
           }
             return await _context.Project.ToListAsync();
-        }
+           // var projects = await (from projs in _context.Project
+           //                      join clients in _context.Client
+           //                      on projs.ClientId equals clients.Id
+           //                       select new ProjectDTO()
+           //                       {
+           //                        Id = projs.Id,
+           //                         ClientId = clients.Name,
+           //                         Project_Name = projs.Project_Name,
+           //                         Description = projs.Description,
+           //                         Project_Time = projs.Project_Time,
+           //                         Project_Type = projs.Project_Type,
+           //                         Project_Cost = projs.Project_Cost,
+           //                         Amount_Paid = projs.Amount_Paid
+           //                       }).ToListAsync();
+           //Console.WriteLine(projects);
+           //return Ok(projects);
+    }
 
         // GET: api/Projects/5
         [HttpGet("{id}")]

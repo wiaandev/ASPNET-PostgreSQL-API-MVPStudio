@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace mvp_studio_api.Models
@@ -21,8 +20,5 @@ namespace mvp_studio_api.Models
 
         [ForeignKey(nameof(ClientType))]
         public int ClientTypeId { get; set; }
-
-        [NotMapped]
-        public ClientType? ClientType { get; set; }
     }
 }

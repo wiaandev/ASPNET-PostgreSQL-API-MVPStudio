@@ -11,9 +11,8 @@ namespace mvp_studio_api.Models
         public int Id { get; set; }
 
         [ForeignKey(nameof(Client))]
-        public int ClientId { get; set; }
-        public Client Client { get; set; }
-
+        public int ClientId { get; set; } = 1;
+        
         [Required]
         public string Project_Name { get; set;}
 
