@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using testApi;
@@ -11,9 +12,11 @@ using testApi;
 namespace mvp_studio_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230829092816_AddedAdminDTO")]
+    partial class AddedAdminDTO
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,8 +147,6 @@ namespace mvp_studio_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
-
                     b.ToTable("Employee");
                 });
 
@@ -202,6 +203,8 @@ namespace mvp_studio_api.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
 
                     b.ToTable("Project");
                 });
@@ -264,15 +267,15 @@ namespace mvp_studio_api.Migrations
                     b.ToTable("TeamMember");
                 });
 
-            modelBuilder.Entity("mvp_studio_api.Models.Employee", b =>
+            modelBuilder.Entity("mvp_studio_api.Models.Project", b =>
                 {
-                    b.HasOne("mvp_studio_api.Models.Role", "Role")
+                    b.HasOne("mvp_studio_api.Models.Client", "Client")
                         .WithMany()
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Role");
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("mvp_studio_api.Models.TeamMember", b =>

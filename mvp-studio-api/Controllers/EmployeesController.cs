@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Isopoh.Cryptography.Argon2;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,55 +12,55 @@ namespace mvp_studio_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AdminsController : ControllerBase
+    public class EmployeesController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public AdminsController(AppDbContext context)
+        public EmployeesController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Admins
+        // GET: api/Employees
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Admin>>> GetAdmin()
+        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployee()
         {
-          if (_context.Admin == null)
+          if (_context.Employee == null)
           {
               return NotFound();
           }
-            return await _context.Admin.ToListAsync();
+            return await _context.Employee.ToListAsync();
         }
 
-        // GET: api/Admins/5
+        // GET: api/Employees/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Admin>> GetAdmin(int id)
+        public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
-          if (_context.Admin == null)
+          if (_context.Employee == null)
           {
               return NotFound();
           }
-            var admin = await _context.Admin.FindAsync(id);
+            var employee = await _context.Employee.FindAsync(id);
 
-            if (admin == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return admin;
+            return employee;
         }
 
-        // PUT: api/Admins/5
+        // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAdmin(int id, Admin admin)
+        public async Task<IActionResult> PutEmployee(int id, Employee employee)
         {
-            if (id != admin.Id)
+            if (id != employee.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(admin).State = EntityState.Modified;
+            _context.Entry(employee).State = EntityState.Modified;
 
             try
             {
@@ -69,7 +68,7 @@ namespace mvp_studio_api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AdminExists(id))
+                if (!EmployeeExists(id))
                 {
                     return NotFound();
                 }
@@ -82,49 +81,44 @@ namespace mvp_studio_api.Controllers
             return NoContent();
         }
 
-        // POST: api/Admins
+        // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Admin>> PostAdmin(Admin admin)
+        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
         {
-          if (_context.Admin == null)
+          if (_context.Employee == null)
           {
-              return Problem("Entity set 'AppDbContext.Admin'  is null.");
+              return Problem("Entity set 'AppDbContext.Employee'  is null.");
           }
-
-            //TODO: Add Hashing algo for passwords
-            admin.Password = Argon2.Hash(admin.Password);
-
-            _context.Admin.Add(admin);
+            _context.Employee.Add(employee);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAdmin", new { id = admin.Id }, admin);
+            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
         }
 
-        // DELETE: api/Admins/5
+        // DELETE: api/Employees/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAdmin(int id)
+        public async Task<IActionResult> DeleteEmployee(int id)
         {
-            if (_context.Admin == null)
+            if (_context.Employee == null)
             {
                 return NotFound();
             }
-            var admin = await _context.Admin.FindAsync(id);
-            if (admin == null)
+            var employee = await _context.Employee.FindAsync(id);
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            _context.Admin.Remove(admin);
+            _context.Employee.Remove(employee);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool AdminExists(int id)
+        private bool EmployeeExists(int id)
         {
-            return (_context.Admin?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Employee?.Any(e => e.Id == id)).GetValueOrDefault();
         }
-
     }
 }
