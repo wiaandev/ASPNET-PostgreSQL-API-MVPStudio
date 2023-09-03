@@ -20,6 +20,12 @@ namespace mvp_studio_api.Models
         public string Description { get; set; }
 
         [Required]
+        public DateOnly Project_Start { get; set; } = new DateOnly();
+
+        [Required]
+        public int Duration_Week { get; set; }
+
+        [Required]
         public int Project_Time { get; set; }
 
         [Required]
@@ -29,5 +35,9 @@ namespace mvp_studio_api.Models
         public int Project_Cost { get; set; }
 
         public int Amount_Paid { get; set; } = 0;
+
+        public bool isCompleted { get; set; } = false;
+
+        public int Progress { get; set; } = 0;
     }
 }

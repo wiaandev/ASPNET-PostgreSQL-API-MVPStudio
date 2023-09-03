@@ -40,12 +40,15 @@ namespace mvp_studio_api.Controllers
                                     ClienName = clients.Name,
                                     Project_Name = projs.Project_Name,
                                     Description = projs.Description,
+                                    Project_Start = projs.Project_Start,
+                                    Duration_Week = projs.Duration_Week,
                                     Project_Time = projs.Project_Time,
                                     Project_Type = projs.Project_Type,
                                     Project_Cost = projs.Project_Cost,
-                                    Amount_Paid = projs.Amount_Paid
+                                    Amount_Paid = projs.Amount_Paid,
+                                    isCompleted = projs.isCompleted,
+                                    Progress = projs.Progress
                                  }).ToListAsync();
-
            Console.WriteLine(projects);
            return Ok(projects);
         }
