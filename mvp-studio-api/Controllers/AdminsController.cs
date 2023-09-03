@@ -125,5 +125,6 @@ namespace mvp_studio_api.Controllers
         {
             return (_context.Admin?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
     }
 }
