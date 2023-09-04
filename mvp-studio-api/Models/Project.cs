@@ -20,7 +20,7 @@ namespace mvp_studio_api.Models
         public string Description { get; set; }
 
         [Required]
-        public DateOnly Project_Start { get; set; } = new DateOnly();
+        public DateOnly Project_Start { get; set; }
 
         [Required]
         public int Duration_Week { get; set; }

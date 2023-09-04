@@ -13,8 +13,7 @@ namespace mvp_studio_api.Models.DTO
 
         public string Description { get; set; } = string.Empty;
 
-        public DateOnly Project_Start { get; set; } = new DateOnly();
-
+        public DateOnly Project_Start { get; set; }
         public int Duration_Week { get; set; }
 
         public int Project_Time { get; set; }

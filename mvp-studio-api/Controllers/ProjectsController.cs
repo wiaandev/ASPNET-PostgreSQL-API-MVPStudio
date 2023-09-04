@@ -34,7 +34,8 @@ namespace mvp_studio_api.Controllers
            var projects = await (from projs in _context.Project
                                 join clients in _context.Client
                                 on projs.ClientId equals clients.Id
-                                  select new ProjectDTO()
+                                orderby projs.Project_Start ascending
+                                 select new ProjectDTO()
                                 {
                                     Id = projs.Id,
                                     ClienName = clients.Name,
@@ -47,15 +48,15 @@ namespace mvp_studio_api.Controllers
                                     Project_Cost = projs.Project_Cost,
                                     Amount_Paid = projs.Amount_Paid,
                                     isCompleted = projs.isCompleted,
-                                    Progress = projs.Progress
-                                 }).ToListAsync();
+                                    Progress = projs.Progress,
+                                  }).ToListAsync();
            Console.WriteLine(projects);
            return Ok(projects);
         }
 
         // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Project>> GetProject(int id)
+        public async Task<ActionResult<ProjectDTO>> GetProject(int id)
         {
           if (_context.Project == null)
           {
@@ -68,7 +69,30 @@ namespace mvp_studio_api.Controllers
                 return NotFound();
             }
 
-            return project;
+            var client = await _context.Client.FindAsync(project.ClientId);
+
+            if(client == null)
+            {
+                return NotFound("Client not found");
+            }
+
+            var singleReturnProject = new ProjectDTO()
+            {
+                Id = project.Id,
+                ClienName = client.Name,
+                Project_Name = project.Project_Name,
+                Description = project.Description,
+                Project_Start = project.Project_Start,
+                Duration_Week = project.Duration_Week,
+                Project_Time = project.Project_Time,
+                Project_Type = project.Project_Type,
+                Project_Cost = project.Project_Cost,
+                Amount_Paid = project.Amount_Paid,
+                isCompleted = project.isCompleted,
+                Progress = project.Progress,
+            };
+
+            return singleReturnProject;
         }
 
         // PUT: api/Projects/5
