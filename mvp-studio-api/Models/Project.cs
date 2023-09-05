@@ -11,13 +11,19 @@ namespace mvp_studio_api.Models
         public int Id { get; set; }
 
         [ForeignKey(nameof(Client))]
-        public int ClientId { get; set; } = 1;
+        public int ClientId { get; set; }
         
         [Required]
         public string Project_Name { get; set;}
 
         [Required]
         public string Description { get; set; }
+
+        [Required]
+        public DateOnly Project_Start { get; set; }
+
+        [Required]
+        public int Duration_Week { get; set; }
 
         [Required]
         public int Project_Time { get; set; }
@@ -29,5 +35,9 @@ namespace mvp_studio_api.Models
         public int Project_Cost { get; set; }
 
         public int Amount_Paid { get; set; } = 0;
+
+        public bool isCompleted { get; set; } = false;
+
+        public int Progress { get; set; } = 0;
     }
 }
