@@ -12,8 +12,8 @@ using testApi;
 namespace mvp_studio_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230829092816_AddedAdminDTO")]
-    partial class AddedAdminDTO
+    [Migration("20230905203156_first migration fix")]
+    partial class firstmigrationfix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -188,12 +188,21 @@ namespace mvp_studio_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Duration_Week")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Progress")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Project_Cost")
                         .HasColumnType("integer");
 
                     b.Property<string>("Project_Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateOnly>("Project_Start")
+                        .HasColumnType("date");
 
                     b.Property<int>("Project_Time")
                         .HasColumnType("integer");
@@ -202,9 +211,10 @@ namespace mvp_studio_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("isCompleted")
+                        .HasColumnType("boolean");
 
-                    b.HasIndex("ClientId");
+                    b.HasKey("Id");
 
                     b.ToTable("Project");
                 });
@@ -265,17 +275,6 @@ namespace mvp_studio_api.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("TeamMember");
-                });
-
-            modelBuilder.Entity("mvp_studio_api.Models.Project", b =>
-                {
-                    b.HasOne("mvp_studio_api.Models.Client", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("mvp_studio_api.Models.TeamMember", b =>

@@ -144,8 +144,6 @@ namespace mvp_studio_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
-
                     b.ToTable("Employee");
                 });
 
@@ -274,17 +272,6 @@ namespace mvp_studio_api.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("TeamMember");
-                });
-
-            modelBuilder.Entity("mvp_studio_api.Models.Employee", b =>
-                {
-                    b.HasOne("mvp_studio_api.Models.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("mvp_studio_api.Models.TeamMember", b =>
