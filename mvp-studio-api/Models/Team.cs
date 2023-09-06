@@ -13,6 +13,6 @@ namespace mvp_studio_api.Models
         // get foreign keys for team members that points to table
 
         [ForeignKey(nameof(Project))]
-        public string ProjectId { get; set; }
+        public int ProjectId { get; set; }
     }
 }
