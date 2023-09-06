@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -131,14 +132,34 @@ namespace mvp_studio_api.Controllers
         [HttpPost]
         public async Task<ActionResult<Project>> PostProject(Project project)
         {
-          if (_context.Project == null)
-          {
-              return Problem("Entity set 'AppDbContext.Project'  is null.");
-          }
-            _context.Project.Add(project);
-            await _context.SaveChangesAsync();
+            if (project == null)
+            {
+                return StatusCode(400, $"Bad Request, because {project} is null");
+            } else
+            {
+                try
+                {
+                    if (_context.Project == null)
+                    {
+                        return Problem("Entity set 'AppDbContext.Project' is null.");
+                    }
 
-            return CreatedAtAction("GetProject", new { id = project.Id }, project);
+                    _context.Project.Add(project);
+                    await _context.SaveChangesAsync();
+
+                    Debug.WriteLine("All good adding project");
+
+                    return CreatedAtAction("GetProject", new { id = project.Id }, project);
+                }
+
+                catch (Exception ex)
+                {
+                    // Handle the error here, you can log it or return an appropriate error response.
+                    return StatusCode(500, $"An error occurred: {ex.Message}");
+                }
+            }
+
+
         }
 
         // DELETE: api/Projects/5

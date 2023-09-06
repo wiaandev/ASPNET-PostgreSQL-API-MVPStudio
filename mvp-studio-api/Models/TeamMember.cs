@@ -12,6 +12,5 @@ namespace mvp_studio_api.Models
 
         [ForeignKey(nameof(Employee))]
         public int EmployeeId { get; set; }
-        public Employee Employee { get; set; }
     }
 }
