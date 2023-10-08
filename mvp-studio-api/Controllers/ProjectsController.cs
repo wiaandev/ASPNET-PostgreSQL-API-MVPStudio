@@ -154,10 +154,9 @@ namespace mvp_studio_api.Controllers
                     Description = projectCreateDTO.Description,
                     Project_Start = projectCreateDTO.Project_Start,
                     Duration_Week = projectCreateDTO.Duration_Week,
-                    Project_Time = projectCreateDTO.Project_Time,
+                    Project_Time = projectCreateDTO.Duration_Week * 40,
                     Project_Type = projectCreateDTO.Project_Type,
                     Project_Cost = projectCreateDTO.Project_Cost,
-                    // Map other properties from projectCreateDTO to the Project entity
                 };
 
                 _context.Project.Add(project);
@@ -165,7 +164,6 @@ namespace mvp_studio_api.Controllers
 
                 // You can create a ProjectDTO to return the created project if needed
 
-                // Return a response indicating success (e.g., 201 Created)
                 return CreatedAtAction("GetProject", new { id = project.Id }, project);
             }
             catch (Exception ex)

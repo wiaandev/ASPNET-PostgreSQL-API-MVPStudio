@@ -11,8 +11,6 @@ namespace testApi
 
         }
 
-        // TODO: Set Tables
-
         public DbSet<Admin> Admin { get; set; }
         public DbSet<Client> Client { get; set; }
         public DbSet<ClientType> Client_Type { get; set; }
@@ -21,6 +19,7 @@ namespace testApi
         public DbSet<Project> Project { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Team> Team { get; set; }
-        public DbSet<TeamMember> Team_Member { get; set; }
+
+        public DbSet<ProjectAssigned> ProjectAssigned { get; set; } 
     }
 }
