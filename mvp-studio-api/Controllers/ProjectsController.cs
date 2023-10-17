@@ -35,7 +35,9 @@ namespace mvp_studio_api.Controllers
            var projects = await (from projs in _context.Project
                                 join clients in _context.Client
                                 on projs.ClientId equals clients.Id
-                                orderby projs.Project_Start ascending
+                                join teams in _context.Team on projs.TeamAssigned equals teams.Id into teamJoin
+                                from team in teamJoin.DefaultIfEmpty()
+                                 orderby projs.Project_Start ascending
                                  select new ProjectDTO()
                                 {
                                     Id = projs.Id,
@@ -50,7 +52,8 @@ namespace mvp_studio_api.Controllers
                                     Amount_Paid = projs.Amount_Paid,
                                     isCompleted = projs.isCompleted,
                                     Progress = projs.Progress,
-                                  }).ToListAsync();
+                                    TeamAssigned = team.TeamName
+                                 }).ToListAsync();
            Console.WriteLine(projects);
            return Ok(projects);
         }
@@ -142,6 +145,8 @@ namespace mvp_studio_api.Controllers
                 // Look up the ClientId based on the provided ClientName
                 var client = await _context.Client.FirstOrDefaultAsync(c => c.Name == projectCreateDTO.ClienName);
 
+                var team = await _context.Team.FirstOrDefaultAsync(t => t.TeamName == projectCreateDTO.TeamAssigned);
+
                 if (client == null)
                 {
                     return BadRequest($"Client with name '{projectCreateDTO.ClienName}' not found.");
@@ -157,6 +162,7 @@ namespace mvp_studio_api.Controllers
                     Project_Time = projectCreateDTO.Duration_Week * 40,
                     Project_Type = projectCreateDTO.Project_Type,
                     Project_Cost = projectCreateDTO.Project_Cost,
+                    TeamAssigned = team?.Id
                 };
 
                 _context.Project.Add(project);

@@ -19,7 +19,5 @@ namespace testApi
         public DbSet<Project> Project { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Team> Team { get; set; }
-
-        public DbSet<ProjectAssigned> ProjectAssigned { get; set; } 
     }
 }

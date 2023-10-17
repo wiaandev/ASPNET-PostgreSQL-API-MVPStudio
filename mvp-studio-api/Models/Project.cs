@@ -39,5 +39,8 @@ namespace mvp_studio_api.Models
         public bool isCompleted { get; set; } = false;
 
         public int Progress { get; set; } = 0;
+
+        [ForeignKey(nameof(Team))]
+        public int? TeamAssigned { get; set; }
     }
 }

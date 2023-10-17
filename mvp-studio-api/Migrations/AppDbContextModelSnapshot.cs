@@ -209,7 +209,7 @@ namespace mvp_studio_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TeamAssigned")
+                    b.Property<int?>("TeamAssigned")
                         .HasColumnType("integer");
 
                     b.Property<bool>("isCompleted")
@@ -218,25 +218,6 @@ namespace mvp_studio_api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Project");
-                });
-
-            modelBuilder.Entity("mvp_studio_api.Models.ProjectAssigned", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProjectAssigned");
                 });
 
             modelBuilder.Entity("mvp_studio_api.Models.Role", b =>
@@ -273,7 +254,7 @@ namespace mvp_studio_api.Migrations
                     b.Property<List<int>>("EmployeeId")
                         .HasColumnType("integer[]");
 
-                    b.Property<int>("ProjectId")
+                    b.Property<int?>("ProjectId")
                         .HasColumnType("integer");
 
                     b.Property<string>("TeamName")
