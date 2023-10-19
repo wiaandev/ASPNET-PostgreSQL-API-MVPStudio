@@ -27,5 +27,7 @@ namespace mvp_studio_api.Models.DTO
         public bool isCompleted { get; set; } = false;
 
         public int Progress { get; set; } = 0;
+
+        public string TeamAssigned { get; set; } = string.Empty;
     }
 }

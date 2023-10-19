@@ -35,7 +35,9 @@ namespace mvp_studio_api.Controllers
            var projects = await (from projs in _context.Project
                                 join clients in _context.Client
                                 on projs.ClientId equals clients.Id
-                                orderby projs.Project_Start ascending
+                                join teams in _context.Team on projs.TeamAssigned equals teams.Id into teamJoin
+                                from team in teamJoin.DefaultIfEmpty()
+                                 orderby projs.Project_Start ascending
                                  select new ProjectDTO()
                                 {
                                     Id = projs.Id,
@@ -50,7 +52,8 @@ namespace mvp_studio_api.Controllers
                                     Amount_Paid = projs.Amount_Paid,
                                     isCompleted = projs.isCompleted,
                                     Progress = projs.Progress,
-                                  }).ToListAsync();
+                                    TeamAssigned = team.TeamName
+                                 }).ToListAsync();
            Console.WriteLine(projects);
            return Ok(projects);
         }
@@ -130,37 +133,52 @@ namespace mvp_studio_api.Controllers
         // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Project>> PostProject(Project project)
+        public async Task<ActionResult<ProjectDTO>> PostProject([FromBody] ProjectDTO projectCreateDTO)
         {
-            if (project == null)
+            if (projectCreateDTO == null)
             {
-                return StatusCode(400, $"Bad Request, because {project} is null");
-            } else
-            {
-                try
-                {
-                    if (_context.Project == null)
-                    {
-                        return Problem("Entity set 'AppDbContext.Project' is null.");
-                    }
-
-                    _context.Project.Add(project);
-                    await _context.SaveChangesAsync();
-
-                    Debug.WriteLine("All good adding project");
-
-                    return CreatedAtAction("GetProject", new { id = project.Id }, project);
-                }
-
-                catch (Exception ex)
-                {
-                    // Handle the error here, you can log it or return an appropriate error response.
-                    return StatusCode(500, $"An error occurred: {ex.Message}");
-                }
+                return BadRequest("Invalid data provided for project creation.");
             }
 
+            try
+            {
+                // Look up the ClientId based on the provided ClientName
+                var client = await _context.Client.FirstOrDefaultAsync(c => c.Name == projectCreateDTO.ClienName);
 
+                var team = await _context.Team.FirstOrDefaultAsync(t => t.TeamName == projectCreateDTO.TeamAssigned);
+
+                if (client == null)
+                {
+                    return BadRequest($"Client with name '{projectCreateDTO.ClienName}' not found.");
+                }
+
+                var project = new Project
+                {
+                    ClientId = client.Id,
+                    Project_Name = projectCreateDTO.Project_Name,
+                    Description = projectCreateDTO.Description,
+                    Project_Start = projectCreateDTO.Project_Start,
+                    Duration_Week = projectCreateDTO.Duration_Week,
+                    Project_Time = projectCreateDTO.Duration_Week * 40,
+                    Project_Type = projectCreateDTO.Project_Type,
+                    Project_Cost = projectCreateDTO.Project_Cost,
+                    TeamAssigned = team?.Id
+                };
+
+                _context.Project.Add(project);
+                await _context.SaveChangesAsync();
+
+                // You can create a ProjectDTO to return the created project if needed
+
+                return CreatedAtAction("GetProject", new { id = project.Id }, project);
+            }
+            catch (Exception ex)
+            {
+                // Handle the error here, you can log it or return an appropriate error response.
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
+
 
         // DELETE: api/Projects/5
         [HttpDelete("{id}")]
