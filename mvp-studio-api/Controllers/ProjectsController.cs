@@ -257,12 +257,33 @@ namespace mvp_studio_api.Controllers
                     TeamAssigned = team?.Id
                 };
 
+                // Save the project to the database
                 _context.Project.Add(project);
                 await _context.SaveChangesAsync();
 
-                // You can create a ProjectDTO to return the created project if needed
+                // After saving to the database, retrieve the created project
+                var createdProject = await _context.Project.FindAsync(project.Id);
 
-                return CreatedAtAction("GetProject", new { id = project.Id }, project);
+                // Convert to ProjectDTO before returning
+                var createdProjectDTO = new ProjectDTO
+                {
+                    Id = createdProject.Id,
+                    ClienName = projectCreateDTO.ClienName,
+                    Project_Name = createdProject.Project_Name,
+                    Description = createdProject.Description,
+                    Project_Start = createdProject.Project_Start,
+                    Duration_Week = createdProject.Duration_Week,
+                    Project_Time = createdProject.Project_Time,
+                    Project_Type = createdProject.Project_Type,
+                    Project_Cost = createdProject.Project_Cost,
+                    Amount_Paid = createdProject.Amount_Paid,
+                    isCompleted = createdProject.isCompleted,
+                    Progress = createdProject.Progress,
+                    TeamAssigned = createdProject.TeamAssigned.ToString() // Convert the int? to a string
+                };
+
+                // Return the created ProjectDTO
+                return CreatedAtAction("GetProject", new { id = createdProjectDTO.Id }, createdProjectDTO);
             }
             catch (Exception ex)
             {
@@ -270,6 +291,7 @@ namespace mvp_studio_api.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
 
 
         // DELETE: api/Projects/5
