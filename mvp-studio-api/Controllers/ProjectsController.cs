@@ -42,6 +42,7 @@ namespace mvp_studio_api.Controllers
                                 {
                                     Id = projs.Id,
                                     ClienName = clients.Name,
+                                    ClientProfileImg = clients.ImgUrl,
                                     Project_Name = projs.Project_Name,
                                     Description = projs.Description,
                                     Project_Start = projs.Project_Start,
@@ -269,6 +270,7 @@ namespace mvp_studio_api.Controllers
                 {
                     Id = createdProject.Id,
                     ClienName = projectCreateDTO.ClienName,
+                    ClientProfileImg = projectCreateDTO.ClientProfileImg,
                     Project_Name = createdProject.Project_Name,
                     Description = createdProject.Description,
                     Project_Start = createdProject.Project_Start,
