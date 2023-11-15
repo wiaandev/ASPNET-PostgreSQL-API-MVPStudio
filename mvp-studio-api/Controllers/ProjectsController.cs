@@ -42,6 +42,7 @@ namespace mvp_studio_api.Controllers
                                 {
                                     Id = projs.Id,
                                     ClienName = clients.Name,
+                                    ClientProfileImg = clients.ImgUrl,
                                     Project_Name = projs.Project_Name,
                                     Description = projs.Description,
                                     Project_Start = projs.Project_Start,
@@ -80,6 +81,13 @@ namespace mvp_studio_api.Controllers
                 return NotFound("Client not found");
             }
 
+            var team = await _context.Team.FindAsync(project.TeamAssigned);
+
+            if(team == null)
+            {
+                return NotFound("Team cannot be found");
+            }
+
             var singleReturnProject = new ProjectDTO()
             {
                 Id = project.Id,
@@ -94,6 +102,7 @@ namespace mvp_studio_api.Controllers
                 Amount_Paid = project.Amount_Paid,
                 isCompleted = project.isCompleted,
                 Progress = project.Progress,
+                TeamAssigned = team.TeamName
             };
 
             return singleReturnProject;
@@ -101,34 +110,118 @@ namespace mvp_studio_api.Controllers
 
         // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProject(int id, Project project)
-        {
-            if (id != project.Id)
-            {
-                return BadRequest();
-            }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateProject(int id, [FromBody] ProjectDTO projectUpdateDTO)
+        //{
+        //    if (id != projectUpdateDTO.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(project).State = EntityState.Modified;
+        //    _context.Entry(projectUpdateDTO).State = EntityState.Modified;
+
+        //    var project = await _context.Project.FindAsync(id);
+        //    var team = await _context.Team.FirstOrDefaultAsync(t => t.TeamName == projectUpdateDTO.TeamAssigned);
+
+        //    if (project == null)
+        //    {
+        //        return NotFound($"Project with ID {id} not found.");
+        //    }
+
+        //    try
+        //    {
+        //        //the properties I want to update
+        //        project.TeamAssigned = project.TeamAssigned;
+        //        project.Progress = projectUpdateDTO.Progress;
+        //        // update assigned team
+        //        await _context.SaveChangesAsync();
+
+        //        return Ok($"Project with ID {id} updated successfully");
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!ProjectExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+        //}
+
+        [HttpPut("ChangeProjectTeam")]
+        public async Task<bool> UpdateProjectTeam(int projectId, int newTeamId )
+        {
+            if (projectId == 0 || newTeamId == 0)
+            {
+                return false;
+            }
+            
+            bool teamExists = await _context.Team.AnyAsync(t => t.Id == newTeamId);
+            bool projectExists = await _context.Project.AnyAsync(p =>  p.Id == projectId);
+
+            if (!teamExists || !projectExists)
+            {
+                return false;
+            }
 
             try
             {
+                var project = await _context.Project.FindAsync(projectId);
+
+                if (project == null)
+                {
+                    return false;
+                }
+
+                project.TeamAssigned = newTeamId;
                 await _context.SaveChangesAsync();
+                return true; 
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
-                if (!ProjectExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return false;
+            }
+        }
+
+        [HttpPut("UpdateProjectProgress")]
+        public async Task<bool> UpdateProjectProgress(int projectId, int newProgress)
+        {
+            if (projectId == 0 || newProgress < 0 || newProgress > 100)
+            {
+                return false;
             }
 
-            return NoContent();
+            bool projectExists = await _context.Project.AnyAsync(p => p.Id == projectId);
+
+            if (!projectExists)
+            {
+                return false;
+            }
+
+            try
+            {
+                var project = await _context.Project.FindAsync(projectId);
+
+                if (project == null)
+                {
+                    return false;
+                }
+
+                project.Progress = newProgress;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
+
+
+
 
         // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -165,12 +258,34 @@ namespace mvp_studio_api.Controllers
                     TeamAssigned = team?.Id
                 };
 
+                // Save the project to the database
                 _context.Project.Add(project);
                 await _context.SaveChangesAsync();
 
-                // You can create a ProjectDTO to return the created project if needed
+                // After saving to the database, retrieve the created project
+                var createdProject = await _context.Project.FindAsync(project.Id);
 
-                return CreatedAtAction("GetProject", new { id = project.Id }, project);
+                // Convert to ProjectDTO before returning
+                var createdProjectDTO = new ProjectDTO
+                {
+                    Id = createdProject.Id,
+                    ClienName = projectCreateDTO.ClienName,
+                    ClientProfileImg = projectCreateDTO.ClientProfileImg,
+                    Project_Name = createdProject.Project_Name,
+                    Description = createdProject.Description,
+                    Project_Start = createdProject.Project_Start,
+                    Duration_Week = createdProject.Duration_Week,
+                    Project_Time = createdProject.Project_Time,
+                    Project_Type = createdProject.Project_Type,
+                    Project_Cost = createdProject.Project_Cost,
+                    Amount_Paid = createdProject.Amount_Paid,
+                    isCompleted = createdProject.isCompleted,
+                    Progress = createdProject.Progress,
+                    TeamAssigned = createdProject.TeamAssigned.ToString() // Convert the int? to a string
+                };
+
+                // Return the created ProjectDTO
+                return CreatedAtAction("GetProject", new { id = createdProjectDTO.Id }, createdProjectDTO);
             }
             catch (Exception ex)
             {
@@ -178,6 +293,7 @@ namespace mvp_studio_api.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
 
 
         // DELETE: api/Projects/5
